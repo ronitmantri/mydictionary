@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Custom Dictionary</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; color: #333; }
+  h1 { text-align: center; }
+  #searchInput { padding: 10px; width: 70%; max-width: 300px; }
+  #searchBtn { padding: 10px; cursor: pointer; }
+  #result { margin-top: 20px; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+  audio { margin-top: 10px; }
+  h3 { margin-bottom: 5px; }
+  p { margin: 5px 0; }
+</style>
+</head>
+<body>
+
+<h1>My Dictionary</h1>
+<div style="text-align:center;">
+  <input type="text" id="searchInput" placeholder="Type a word...">
+  <button id="searchBtn">Search</button>
+</div>
+<div id="result"></div>
+
+<script>
+// Sample dictionary JSON
+const dictionary = [
+  {
+    "word": "hello",
+    "phonetic": "həˈləʊ",
+    "phonetics": [
+      {"text": "həˈləʊ","audio": "//ssl.gstatic.com/dictionary/static/sounds/20200429/hello--_gb_1.mp3"},
+      {"text": "hɛˈləʊ"}
+    ],
+    "origin": "early 19th century: variant of earlier hollo ; related to holla.",
+    "meanings": [
+      {
+        "partOfSpeech": "exclamation",
+        "definitions": [
+          {"definition": "used as a greeting or to begin a phone conversation.","example": "hello there, Katie!"}
+        ]
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {"definition": "an utterance of ‘hello’; a greeting.","example": "she was getting polite nods and hellos from people"}
+        ]
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {"definition": "say or shout ‘hello’.","example": "I pressed the phone button and helloed"}
+        ]
+      }
+    ]
+  }
+];
+
+const searchInput = document.getElementById("searchInput");
+const searchBtn = document.getElementById("searchBtn");
+const resultDiv = document.getElementById("result");
+
+searchBtn.addEventListener("click", () => {
+  const query = searchInput.value.toLowerCase();
+  const entry = dictionary.find(d => d.word.toLowerCase() === query);
+
+  if (!entry) {
+    resultDiv.innerHTML = `<p>Word not found!</p>`;
+    return;
+  }
+
+  let html = `<h2>${entry.word}</h2>`;
+  html += `<p><strong>Phonetic:</strong> ${entry.phonetic}</p>`;
+  if (entry.phonetics[0]?.audio) {
+    html += `<audio controls src="${entry.phonetics[0].audio}"></audio>`;
+  }
+  html += `<p><strong>Origin:</strong> ${entry.origin}</p>`;
+
+  entry.meanings.forEach(meaning => {
+    html += `<h3>${meaning.partOfSpeech}</h3>`;
+    meaning.definitions.forEach(def => {
+      html += `<p>${def.definition}</p>`;
+      if (def.example) html += `<p><em>Example: ${def.example}</em></p>`;
+    });
+  });
+
+  resultDiv.innerHTML = html;
+});
+
+// Optional: press Enter to search
+searchInput.addEventListener("keypress", e => {
+  if (e.key === "Enter") searchBtn.click();
+});
+</script>
+
+</body>
+</html>
